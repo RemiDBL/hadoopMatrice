@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -25,7 +26,6 @@ public class MatriceHadoop {
       StringTokenizer itr = new StringTokenizer(value.toString(), "," );
       while (itr.hasMoreTokens()) {
         tmp = itr.nextToken(); 
-        if(itr.hasMoreTokens()) tmp+=",";
         word.set(tmp);
         order = new IntWritable(i); 
         context.write(order, word);
@@ -41,7 +41,15 @@ public class MatriceHadoop {
     public void reduce(Text key, Iterable<IntWritable> values,
                        Context context
                        ) throws IOException, InterruptedException {
-        //VIDE
+        Iterator<IntWritable> valuesIt = values.iterator();
+        while (valuesIt.hasNext()) {
+            if(valuesIt.hasNext()) 
+               context.write(key, (String)valuesIt.next()+",");
+            else 
+               context.write(key,(String)valuesIt.next());
+        }
+
+        
     }
   }
 
