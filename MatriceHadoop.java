@@ -37,17 +37,19 @@ public class MatriceHadoop {
   public static class MyReducer
        extends Reducer<Text,IntWritable,Text,IntWritable> {
     private IntWritable result = new IntWritable();
-
+    private String line = ""; 
+    
     public void reduce(Text key, Iterable<IntWritable> values,
                        Context context
                        ) throws IOException, InterruptedException {
         Iterator<IntWritable> valuesIt = values.iterator();
         while (valuesIt.hasNext()) {
             if(valuesIt.hasNext()) 
-               context.write(key, (String)valuesIt.next()+",");
+                line+=valuesIt.next()+","; 
             else 
-               context.write(key,(String)valuesIt.next());
+                line+=valuesIt.next(); 
         }
+        context.write(key, (String)line);
 
         
     }
